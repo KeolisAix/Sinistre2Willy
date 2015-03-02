@@ -109,7 +109,7 @@ namespace Sinitres2Willy
             else
             {
                 sb.AppendLine("<center><img src='K:\\Commun\\Keolis_logo.png'><br><br>Date du rapport : <b>" + System.DateTime.Now + "</b>");
-                sb.AppendLine("<br><br><h1><center><b>Il n'y a pas de nouveau Sinistre !</b></center><br><br>");
+                sb.AppendLine("<br><br><h1><center><b>Il n'y a pas sinistre sans numéro Keorisk !</b></center><br><br>");
                 sb.AppendLine("<center><img src='K:\\Commun\\pouce.png'>");
             }                
             e_mail.Body = sb.ToString();
