@@ -27,7 +27,7 @@ namespace Sinitres2Willy
             {
                 string connstring = String.Format("Server={0};Port={1};" +
                     "User Id={2};Password={3};Database={4};",
-                    "mdmkpa", "5432", "postgres",
+                    "192.168.207.21", "5432", "postgres",
                     "postgres", "vehicules_sinistre");
                 NpgsqlConnection conn = new NpgsqlConnection(connstring);
                 conn.Open();
@@ -69,9 +69,9 @@ namespace Sinitres2Willy
             e_mail = new MailMessage();
             e_mail.From = new MailAddress("patrice.maldi@keolis.com");
             e_mail.To.Add("patrice.maldi@keolis.com");
-            e_mail.To.Add("sylvain.mennillo@keolis.com");
-            e_mail.To.Add("willy.boisfer@keolis.com");
-            e_mail.To.Add("alison.cavelier@keolis.com");
+            //e_mail.To.Add("sylvain.mennillo@keolis.com");
+            //e_mail.To.Add("willy.boisfer@keolis.com");
+            //e_mail.To.Add("alison.cavelier@keolis.com");
             //e_mail.To.Add("philippe.boulet@keolis.com");
             e_mail.Subject = "Sinistralité : " + System.DateTime.Now + "";
             e_mail.IsBodyHtml = true;
@@ -90,16 +90,17 @@ namespace Sinitres2Willy
                     string date = rowView.Cells["date"].Value.ToString();
                     string Heure = rowView.Cells["Heure"].Value.ToString();
                     byte[] data = Convert.FromBase64String(motif);
-
-                    string connstring = String.Format("Server={0};Port={1};" +
+                    NpgsqlConnection.ClearAllPools();
+                    string connstring2 = String.Format("Server={0};Port={1};" +
                     "User Id={2};Password={3};Database={4};",
-                    "mdmkpa", "5432", "postgres",
+                    "192.168.207.21", "5432", "postgres",
                     "postgres", "vehicules");
-                    NpgsqlConnection conn = new NpgsqlConnection(connstring);
-                    conn.Open();
+                    NpgsqlConnection conn2 = new NpgsqlConnection(connstring2);
+                    conn2.Open();
                     string sql = "SELECT modele FROM vehicules.vehicule WHERE parc_keolis = '" + bus + "'";
-                    NpgsqlCommand command = new NpgsqlCommand(sql, conn);
+                    NpgsqlCommand command = new NpgsqlCommand(sql, conn2);
                     string modele = command.ExecuteScalar().ToString();
+                    //string modele = "CITARO";
                     string decodedString = Encoding.UTF8.GetString(data);
                     string decodedStringHTML = decodedString.Replace("%20", " ").Replace("%E9", "é").Replace("%2C", ",").Replace("%29", ")").Replace("%28", "(");
                     sb.AppendLine("<tr><td align='center' valign='middle'>" + num + "</td><td align='center' valign='middle'><a href='http://mdmkpa/sinistre/index.php?bus="+bus+"&modele="+modele+"&controleur=Willy%20Boisfer'>" + bus + "</a></td><td align='center' valign='middle'>" + decodedStringHTML + "</td><td align='center' valign='middle'>" + controleur + "</td><td align='center' valign='middle'>" + date + "</td><td align='center' valign='middle'>" + Heure + "</td></tr>");
